@@ -1,0 +1,29 @@
+# .chezmoiignore matches TARGET paths (~/.zshrc), never source paths (dot_zshrc).
+# This file is itself a template even without a .tmpl suffix.
+
+# Secrets — never managed, never committed.
+.composer/auth.json
+.ssh/id_*
+.ssh/known_hosts
+.netrc
+
+# Work-specific config lives in the private overlay repo, checked out directly
+# to ~/.config/zsh/. chezmoi must not manage or delete it.
+.config/zsh/90-work.zsh
+
+# Machine-local scratch overrides.
+.config/zsh/99-local.zsh
+.config/ghostty/local.ghostty
+
+# Churny state that chezmoi is a bad fit for — every change would need a re-add.
+.zsh_history
+.local/state/zsh/history
+.zcompdump*
+.cache/**
+
+# Documentation only — never rendered into the home directory.
+.composer/auth.json.tmpl.example
+
+# Repo-only files. Without these, chezmoi writes them into $HOME.
+Brewfile
+README.md

@@ -1,0 +1,26 @@
+# ~/.zshenv — sourced for EVERY zsh (interactive, non-interactive, scripts).
+# Keep this small and side-effect free.
+#
+# NOTE: deliberately NO PATH construction here. macOS /etc/zprofile runs
+# `eval $(/usr/libexec/path_helper -s)` AFTER ~/.zshenv, which reorders PATH and
+# demotes /opt/homebrew/bin to LAST. PATH is built in ~/.zprofile instead.
+
+export EDITOR="vim"
+export VISUAL="$EDITOR"
+export PAGER="less"
+export LESS="-FRX"
+
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+# XDG base directories
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+
+# Where all the code lives — set at `chezmoi init`, used by 40-dirs.zsh
+# and by the private work overlay.
+export CODE="{{ .codeDir }}"
+
+[ -s "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"

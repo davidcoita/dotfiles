@@ -1,0 +1,91 @@
+# ~/.gitconfig
+#
+# ORDER MATTERS: git applies definitions in the order it reads them, so the
+# LAST one wins. The [user] block must come BEFORE the includeIf blocks, or it
+# overrides them — which is what was happening: every personal commit
+# was being attributed to the work address.
+
+[user]
+	name = {{ .name }}
+	email = {{ .email }}
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = vim
+	pager = delta
+	excludesfile = ~/.config/git/ignore
+	# Big repos: cache untracked-file scanning. On a 60k-file repo
+	# this took `git status` from 470ms to 30ms.
+	untrackedCache = true
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true          # n / N to jump between diff hunks
+	line-numbers = true
+	side-by-side = false
+	syntax-theme = tokyonight_night
+	hyperlinks = true
+
+[merge]
+	conflictstyle = zdiff3   # shows the common ancestor, not just both sides
+	tool = vimdiff
+
+[diff]
+	algorithm = histogram
+	colorMoved = default
+	mnemonicPrefix = true
+	renames = true
+
+[push]
+	default = current
+	autoSetupRemote = true
+	followTags = true
+
+[pull]
+	rebase = true
+
+[fetch]
+	prune = true
+	pruneTags = true
+
+[rebase]
+	autoStash = true
+	autoSquash = true
+
+[branch]
+	sort = -committerdate
+
+[column]
+	ui = auto
+
+[rerere]
+	enabled = true           # remember conflict resolutions and replay them
+
+[help]
+	autocorrect = prompt
+
+# Installed by `git lfs install`. Kept here so `chezmoi apply` doesn't drop it.
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+# ── per-directory identity — must stay LAST so it wins ───────────────────────
+# Each workspace keeps its own .gitconfig.local (identity, signing key,
+# core.sshCommand). Those files are machine-local and are NOT in this repo.
+# The workspace names come from `chezmoi init`; a blank answer omits the block.
+{{- if .personalDir }}
+
+[includeIf "gitdir:{{ .codeDir }}/{{ .personalDir }}/"]
+	path = {{ .codeDir }}/{{ .personalDir }}/.gitconfig.local
+{{- end }}
+{{- if .workDir }}
+
+[includeIf "gitdir:{{ .codeDir }}/{{ .workDir }}/"]
+	path = {{ .codeDir }}/{{ .workDir }}/.gitconfig.local
+{{- end }}

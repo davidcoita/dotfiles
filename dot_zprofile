@@ -1,0 +1,38 @@
+# ~/.zprofile — login shells, sourced AFTER /etc/zprofile.
+#
+# PATH lives here, and only here. /etc/zprofile runs path_helper, which reorders
+# PATH and demotes /opt/homebrew/bin to LAST if PATH was built in ~/.zshenv.
+# This file is the first one that runs after that, so it wins.
+#
+# `typeset -U` makes these arrays unique automatically — re-sourcing this file
+# can no longer produce duplicate entries (the old .zshrc had 6).
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+typeset -U path PATH fpath FPATH manpath MANPATH cdpath
+
+export PNPM_HOME="$HOME/Library/pnpm"
+export BUN_INSTALL="$HOME/.bun"
+
+path=(
+  $HOME/.local/bin
+  $BUN_INSTALL/bin
+  $PNPM_HOME
+  $HOME/.composer/vendor/bin
+  $HOME/go/bin
+  $HOME/.lmstudio/bin
+  /opt/homebrew/opt/openjdk@21/bin
+  /opt/homebrew/bin
+  /opt/homebrew/sbin
+  $path
+)
+
+# Drop anything that doesn't exist on this machine.
+#   ${^path} = apply the glob per-element, N = nullglob, -/ = existing dirs (follow symlinks)
+path=( ${^path}(N-/) )
+
+# No `export PATH` needed — `path` is tied to PATH, which is already exported.
+
+# JetBrains Toolbox
+[[ -d "$HOME/Library/Application Support/JetBrains/Toolbox/scripts" ]] &&
+  path+=( "$HOME/Library/Application Support/JetBrains/Toolbox/scripts" )

@@ -1,0 +1,15 @@
+{{- /* Prompted once on `chezmoi init`, then stored in ~/.config/chezmoi/chezmoi.toml. */ -}}
+{{- /* That file is machine-local and is never part of this repo. */ -}}
+
+{{- $email       := promptStringOnce . "email"       "Primary git email" -}}
+{{- $name        := promptStringOnce . "name"        "Git author name" -}}
+{{- $codeDir     := promptStringOnce . "codeDir"     "Where your repos live" (printf "%s/Code" .chezmoi.homeDir) -}}
+{{- $personalDir := promptStringOnce . "personalDir" "Personal workspace, relative to that (blank to skip)" "personal" -}}
+{{- $workDir     := promptStringOnce . "workDir"     "Work workspace, relative to that (blank to skip)" "work" -}}
+
+[data]
+    email       = {{ $email       | quote }}
+    name        = {{ $name        | quote }}
+    codeDir     = {{ $codeDir     | quote }}
+    personalDir = {{ $personalDir | quote }}
+    workDir     = {{ $workDir     | quote }}

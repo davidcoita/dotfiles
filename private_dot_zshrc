@@ -1,0 +1,89 @@
+# ~/.zshrc — interactive shells.
+#
+# This file is deliberately short. Everything else lives in ~/.config/zsh/NN-*.zsh
+# and is sourced in numeric order below.
+#
+# Load order in this file is load-bearing:
+#   1. p10k instant prompt must be FIRST and nothing above it may print output
+#   2. oh-my-zsh overwrites options set before it, so all overrides come after
+#   3. fzf needs compdef, so it comes after oh-my-zsh's compinit
+#   4. zsh-syntax-highlighting wraps every existing ZLE widget at source time,
+#      so it must come after anything that defines widgets — hence the bottom
+#   5. zsh-autosuggestions after that, per its own README
+
+# --- 1. powerlevel10k instant prompt (keep at the very top, keep it quiet) ---
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# --- 2. keep the path arrays unique ---
+# Also set in ~/.zprofile, but that only runs for LOGIN shells. Without this,
+# a non-login interactive shell re-appends entries (gcloud's path.zsh.inc,
+# composer's vendor/bin) that PATH already inherited, and they duplicate.
+# Naming the scalars (PATH, FPATH…) as well as the arrays is required: tools that
+# assign to the scalar directly — gcloud's path.zsh.inc does `export PATH=...:$PATH`
+# — bypass a uniqueness constraint declared on the array alone. Verified.
+typeset -U path PATH fpath FPATH manpath MANPATH cdpath
+
+# --- 3. oh-my-zsh ---
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+zstyle ':omz:update' mode reminder
+zstyle ':omz:update' frequency 14
+
+# fzf-tab must load before the syntax-highlighting/autosuggestions pair below.
+plugins=(
+  git
+  fzf-tab
+  docker
+  docker-compose
+  kubectl
+  terraform
+  gcloud
+  composer
+  brew
+  macos
+)
+
+# Guarded: run_once_before_install-oh-my-zsh.sh installs this at apply time, but
+# if that ever fails, degrade to a plain-but-working shell instead of erroring
+# out here and skipping everything below.
+if [[ -f $ZSH/oh-my-zsh.sh ]]; then
+  source $ZSH/oh-my-zsh.sh
+else
+  print -u2 "warning: oh-my-zsh missing at $ZSH — run 'chezmoi apply' to install it"
+  autoload -Uz compinit && compinit -d "${XDG_CACHE_HOME:-$HOME/.cache}/zcompdump"
+fi
+
+# --- 4. everything that overrides oh-my-zsh ---
+# Two directories, merged and sorted numerically:
+#   ~/.config/zsh/          public  — managed by chezmoi
+#   ~/.config/zsh-private/  private — separate git repo, work-specific
+# The (N) qualifier means a missing directory is silently skipped, so a machine
+# without the private overlay just loads the public half.
+#
+# Convention: public files use 00-89, private uses 90-99. The brace expands
+# public-then-private, so each directory is sorted internally and private always
+# lands last — keep the number ranges apart and the order stays predictable.
+for _f in ${XDG_CONFIG_HOME:-$HOME/.config}/zsh{,-private}/[0-9][0-9]-*.zsh(N); do
+  source $_f
+done
+unset _f
+
+# --- 5. widget-wrapping plugins, in this exact order, at the bottom ---
+# fzf: needs compdef (so: after oh-my-zsh) and defines widgets (so: before z-sy-h).
+(( $+commands[fzf] )) && source <(fzf --zsh)
+
+source "${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1   # per upstream: "a big boost to performance"
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+source "${ZSH_CUSTOM:-$ZSH/custom}/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+# --- 6. prompt config ---
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+# --- 7. machine-local overrides, never committed ---
+[[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/99-local.zsh ]] &&
+  source ${XDG_CONFIG_HOME:-$HOME/.config}/zsh/99-local.zsh

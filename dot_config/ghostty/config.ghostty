@@ -1,0 +1,57 @@
+# Ghostty — https://ghostty.org/docs/config
+# Reload live with cmd+shift+,   ·   list themes with `ghostty +list-themes`
+
+# ── appearance ───────────────────────────────────────────────────────────────
+theme = dark:TokyoNight Night,light:TokyoNight Day
+
+font-family = "JetBrainsMono Nerd Font Mono"
+font-size = 14
+font-feature = calt
+font-feature = liga
+font-thicken = true
+
+# Roomier than the default; makes the prompt breathe.
+window-padding-x = 14
+window-padding-y = 10
+window-padding-balance = true
+
+background-opacity = 0.97
+background-blur = 20
+macos-titlebar-style = tabs
+window-save-state = always
+window-inherit-working-directory = true
+
+cursor-style = bar
+cursor-style-blink = true
+mouse-hide-while-typing = true
+
+# ── scrollback ───────────────────────────────────────────────────────────────
+scrollback-limit = 10000000
+copy-on-select = clipboard
+
+# ── shell integration ────────────────────────────────────────────────────────
+# Enables prompt-aware jumping, cursor shape handling, and working-dir inheritance.
+shell-integration = zsh
+shell-integration-features = cursor,sudo,title
+
+# ── keybindings ──────────────────────────────────────────────────────────────
+# Splits — these replace what tmux was doing, natively.
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+opt+left=goto_split:left
+keybind = cmd+opt+right=goto_split:right
+keybind = cmd+opt+up=goto_split:up
+keybind = cmd+opt+down=goto_split:down
+keybind = cmd+shift+enter=toggle_split_zoom
+keybind = cmd+w=close_surface
+
+# Quake-style dropdown from anywhere in macOS.
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+
+# Word-wise motion, matching the zsh bindings in ~/.config/zsh/30-keys.zsh
+keybind = alt+left=esc:b
+keybind = alt+right=esc:f
+
+# ── machine-local overrides, not committed ───────────────────────────────────
+# '?' means "ignore if the file doesn't exist"
+config-file = ?local.ghostty
