@@ -1,0 +1,16 @@
+# Shared terminal essentials for macOS on Apple Silicon.
+# The full Brewfile is an optional inventory of the author's development machine.
+brew "chezmoi"
+brew "git"
+brew "git-delta"
+brew "git-lfs"
+brew "bat"
+brew "coreutils"
+brew "eza"
+brew "fd"
+brew "fnm"
+brew "fzf"
+brew "ripgrep"
+brew "zoxide"
+cask "font-jetbrains-mono-nerd-font"
+cask "ghostty"

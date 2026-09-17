@@ -61,7 +61,6 @@ export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
 
 # --- docker ---
 export COMPOSE_BAKE=false
-export BUILDX_BUILDER=desktop-linux
 
 # --- fzf ---
 # `fzf --zsh` emits both key-bindings and completion. It must come after compinit

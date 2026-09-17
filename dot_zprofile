@@ -22,6 +22,7 @@ path=(
   $HOME/go/bin
   $HOME/.lmstudio/bin
   /opt/homebrew/opt/openjdk@21/bin
+  /opt/homebrew/opt/libpq/bin
   /opt/homebrew/bin
   /opt/homebrew/sbin
   $path

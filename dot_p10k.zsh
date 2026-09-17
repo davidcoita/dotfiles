@@ -1,5 +1,5 @@
-# Config for Powerlevel10k with lean prompt style. Type `p10k configure` to generate
-# your own config based on it.
+# Powerlevel10k with an Agnoster-style, two-line prompt in Tokyo Night colours.
+# The base preset is followed by the shared overrides at the end of this file.
 #
 # Tip: Looking for a nice color? Here's a one-liner to print colormap.
 #
@@ -368,18 +368,20 @@
 
     if (( $1 )); then
       # Styling for up-to-date Git status.
-      local       meta='%f'     # default foreground
-      local      clean='%76F'   # green foreground
-      local   modified='%178F'  # yellow foreground
-      local  untracked='%39F'   # blue foreground
-      local conflicted='%196F'  # red foreground
+      # The segment background carries repository status; dark text stays legible
+      # on the green (clean), amber (changed) and coral (conflicted) blocks.
+      local       meta='%F{#1a1b26}'
+      local      clean='%F{#1a1b26}'
+      local   modified='%F{#1a1b26}'
+      local  untracked='%F{#1a1b26}'
+      local conflicted='%F{#1a1b26}'
     else
       # Styling for incomplete and stale Git status.
-      local       meta='%244F'  # grey foreground
-      local      clean='%244F'  # grey foreground
-      local   modified='%244F'  # grey foreground
-      local  untracked='%244F'  # grey foreground
-      local conflicted='%244F'  # grey foreground
+      local       meta='%F{#a9b1d6}'  # muted text while status loads
+      local      clean='%F{#a9b1d6}'  # muted text while status loads
+      local   modified='%F{#a9b1d6}'  # muted text while status loads
+      local  untracked='%F{#a9b1d6}'  # muted text while status loads
+      local conflicted='%F{#a9b1d6}'  # muted text while status loads
     fi
 
     local res
@@ -1701,9 +1703,6 @@
   # really need it.
   typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
 
-  # If p10k is already loaded, reload configuration.
-  # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
-  (( ! $+functions[p10k] )) || p10k reload
 }
 
 # Tell `p10k configure` which file it should overwrite.
@@ -1713,7 +1712,7 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 'builtin' 'unset' 'p10k_config_opts'
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Local overrides. These run after the preset's anonymous function, and every
+# Shared overrides. These run after the preset's anonymous function, and every
 # variable there is `typeset -g`, so a later assignment simply wins.
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -1738,6 +1737,7 @@ typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
   gcloud
   context
   time
+  newline
 )
 
 # Show a duration only when a command was slow enough to care about.
@@ -1789,3 +1789,53 @@ typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=always
 
 # Instant prompt: warn if something prints during init (it would corrupt it).
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=verbose
+
+
+# Agnoster-style connected blocks, using Ghostty's Tokyo Night palette.
+# Commands stay on the second line; the right-hand details stay on the first.
+typeset -g POWERLEVEL9K_BACKGROUND='#24283b'
+typeset -g POWERLEVEL9K_FOREGROUND='#a9b1d6'
+typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_BACKGROUND=
+typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_GAP_BACKGROUND=
+typeset -g POWERLEVEL9K_{LEFT,RIGHT}_{LEFT,RIGHT}_WHITESPACE=' '
+typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$'\uE0B0'
+typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$'\uE0B2'
+typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR=$'\uE0B1'
+typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR=$'\uE0B3'
+typeset -g POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=$'\uE0B0'
+typeset -g POWERLEVEL9K_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL=$'\uE0B2'
+
+# Blue path block. Named directories (e.g. ~myproject/src) keep paths compact.
+typeset -g POWERLEVEL9K_DIR_BACKGROUND='#7aa2f7'
+typeset -g POWERLEVEL9K_DIR_FOREGROUND='#1a1b26'
+typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND='#1a1b26'
+typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND='#283457'
+typeset -g POWERLEVEL9K_DIR_ANCHOR_BOLD=true
+
+# A branch symbol followed by its name and the existing detailed Git counters.
+typeset -g POWERLEVEL9K_VCS_VISUAL_IDENTIFIER_EXPANSION=
+typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=$'\uE0A0 '
+typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND='#9ece6a'
+typeset -g POWERLEVEL9K_VCS_{MODIFIED,UNTRACKED}_BACKGROUND='#e0af68'
+typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND='#f7768e'
+typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND='#3b4261'
+typeset -g POWERLEVEL9K_VCS_{CLEAN,MODIFIED,UNTRACKED,CONFLICTED}_FOREGROUND='#1a1b26'
+typeset -g POWERLEVEL9K_VCS_LOADING_FOREGROUND='#a9b1d6'
+
+# The command line stays unboxed; its arrow turns coral after a failed command.
+typeset -g POWERLEVEL9K_PROMPT_CHAR_BACKGROUND=
+typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_{LEFT,RIGHT}_WHITESPACE=
+typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#9ece6a'
+typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND='#f7768e'
+
+# Quieter companion blocks for time, runtimes, and context on the right.
+typeset -g POWERLEVEL9K_TIME_FOREGROUND='#a9b1d6'
+typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#e0af68'
+typeset -g POWERLEVEL9K_NODE_VERSION_FOREGROUND='#9ece6a'
+typeset -g POWERLEVEL9K_PHP_VERSION_FOREGROUND='#bb9af7'
+typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND='#7dcfff'
+typeset -g POWERLEVEL9K_STATUS_{OK,OK_PIPE}_FOREGROUND='#9ece6a'
+typeset -g POWERLEVEL9K_STATUS_{ERROR,ERROR_SIGNAL,ERROR_PIPE}_FOREGROUND='#f7768e'
+
+# Reload only after all shared overrides, so `source ~/.p10k.zsh` applies them too.
+(( ! $+functions[p10k] )) || p10k reload

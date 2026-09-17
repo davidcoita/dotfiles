@@ -8,7 +8,8 @@
 .netrc
 
 # Work-specific config lives in the private overlay repo, checked out directly
-# to ~/.config/zsh/. chezmoi must not manage or delete it.
+# to ~/.config/zsh-private/. chezmoi must not manage it.
+.config/zsh-private/**
 .config/zsh/90-work.zsh
 
 # Machine-local scratch overrides.
@@ -26,4 +27,5 @@
 
 # Repo-only files. Without these, chezmoi writes them into $HOME.
 Brewfile
+Brewfile.terminal
 README.md

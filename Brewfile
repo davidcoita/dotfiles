@@ -61,6 +61,8 @@ brew "lftp"
 brew "libass"
 # ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
 brew "libheif"
+# PostgreSQL client tools (pg_dump, pg_restore, psql)
+brew "libpq"
 # Framework for layout and rendering of i18n text
 brew "pango"
 # Library to render SVG files using Cairo

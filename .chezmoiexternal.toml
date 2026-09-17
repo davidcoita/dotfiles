@@ -29,3 +29,9 @@
     refreshPeriod = "168h"
     [".oh-my-zsh/custom/plugins/fzf-tab".clone]
         args = ["--depth=1"]
+
+# Shared bat/delta theme. Run `bat cache --build` after the first apply.
+[".config/bat/themes/tokyonight_night.tmTheme"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/folke/tokyonight.nvim/main/extras/sublime/tokyonight_night.tmTheme"
+    refreshPeriod = "168h"
